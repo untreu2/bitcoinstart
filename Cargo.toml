@@ -1,0 +1,13 @@
+[package]
+name = "bitcoinstart"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bip39 = "2.0"
+bitcoin = { version = "0.32", features = ["rand", "serde"] }
+hex = "0.4"
+bdk = { version = "0.30.1", features = ["keys-bip39"] }
+bs58 = { version = "0.5.1", features = ["check"] }
+rand = "0.9.0"
+sha2 = "0.10.8"
