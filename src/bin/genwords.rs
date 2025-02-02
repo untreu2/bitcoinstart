@@ -8,7 +8,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Fill the 'entropy' array with random bytes
     // This uses the thread-local random number generator to ensure sufficient randomness
-    rand::thread_rng().fill_bytes(&mut entropy);
+    rand::rng().fill_bytes(&mut entropy);
 
     // Generate a BIP-39 mnemonic phrase from the random entropy
     let mnemonic = Mnemonic::from_entropy_in(Language::English, &entropy)?;
