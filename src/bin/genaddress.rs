@@ -1,10 +1,14 @@
-use std::{collections::HashMap, io::{self, Write}, str::FromStr};
 use bitcoin::address::{Address, KnownHrp};
 use bitcoin::bip32::{ChildNumber, Xpub};
 use bitcoin::secp256k1::Secp256k1;
 use bitcoin::CompressedPublicKey;
 use bs58;
 use sha2::{Digest, Sha256};
+use std::{
+    collections::HashMap,
+    io::{self, Write},
+    str::FromStr,
+};
 
 // SLIP-132 version codes
 fn get_slip132_prefixes() -> HashMap<&'static str, [u8; 4]> {
@@ -20,13 +24,17 @@ fn convert_zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>
 
     // Control first 4 bytes of zpub
     let decoded = bs58::decode(zpub).into_vec()?;
-    
+
     if decoded.len() != 82 {
-        return Err(format!("Invalid zpub length: expected 82 bytes, got {}", decoded.len()).into());
+        return Err(format!(
+            "Invalid zpub length: expected 82 bytes, got {}",
+            decoded.len()
+        )
+        .into());
     }
 
     let current_prefix = &decoded[..4];
-    
+
     // If current prefix is zpub, change it to xpub
     if current_prefix != prefixes.get("zpub").unwrap() {
         return Err("Input is not a valid zpub".into());
@@ -50,7 +58,10 @@ fn convert_zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>
     Ok(xpub)
 }
 
-fn generate_addresses(zpub: &str, num_addresses: u32) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+fn generate_addresses(
+    zpub: &str,
+    num_addresses: u32,
+) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let secp = Secp256k1::new();
 
     // Convert zpub to xpub
@@ -61,7 +72,10 @@ fn generate_addresses(zpub: &str, num_addresses: u32) -> Result<Vec<String>, Box
 
     for i in 0..num_addresses {
         // Use 0 for external chain, use 1 for index
-        let path = vec![ChildNumber::Normal { index: 0 }, ChildNumber::Normal { index: i }];
+        let path = vec![
+            ChildNumber::Normal { index: 0 },
+            ChildNumber::Normal { index: i },
+        ];
 
         // Generate child xpub
         let child_xpub = xpub.derive_pub(&secp, &path)?;
@@ -92,7 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for address in addresses {
         println!("{}", address);
     }
-    
+
     // Return Ok(()) to indicate that the program executed successfully
     Ok(())
 }

@@ -1,17 +1,17 @@
+use bdk::keys::bip39::{Language, Mnemonic};
+use bitcoin::base58;
+use bitcoin::bip32::{DerivationPath, Xpriv, Xpub};
+use bitcoin::secp256k1::Secp256k1;
+use bitcoin::Network;
 use std::io::{self, Write};
 use std::str::FromStr;
-use bitcoin::bip32::{DerivationPath, Xpriv, Xpub};
-use bitcoin::base58;
-use bitcoin::Network;
-use bitcoin::secp256k1::Secp256k1;
-use bdk::keys::bip39::{Language, Mnemonic};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Prompt the user to enter a 24-word mnemonic phrase
     print!("Please enter your 24-word mnemonic: ");
     // Flush stdout to ensure the prompt is displayed immediately
     io::stdout().flush()?;
-    
+
     // Read the user's input from standard input
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Parse the input string into a BIP-39 mnemonic
     // This will return an error if the input does not form a valid mnemonic
     let mnemonic = Mnemonic::parse_in(Language::English, mnemonic_str)?;
-    
+
     // This seed is used to generate the master private key
     let seed = mnemonic.to_seed("");
 
@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Serialize the account extended public key (xpub) into bytes
     let mut serialized = account_xpub.encode();
-    
+
     // Modify the version bytes to match zpub format
     // The version bytes for zpub are: 0x04, 0xb2, 0x47, 0x46
     serialized[0] = 0x04;
