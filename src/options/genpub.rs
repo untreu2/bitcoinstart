@@ -6,7 +6,7 @@ use bitcoin::Network;
 use std::io::{self, Write};
 use std::str::FromStr;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Prompt the user to enter a 24-word mnemonic phrase
     print!("Please enter your 24-word mnemonic: ");
     // Flush stdout to ensure the prompt is displayed immediately

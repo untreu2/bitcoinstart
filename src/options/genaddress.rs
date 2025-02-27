@@ -92,7 +92,7 @@ fn generate_addresses(
     Ok(addresses)
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     print!("Enter your zpub key: ");
     io::stdout().flush()?;
 

@@ -1,7 +1,7 @@
 use bdk::keys::bip39::{Language, Mnemonic};
 use rand::RngCore;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define a 32-byte array to store 256 bits of entropy
     // Using 256 bits (32 bytes) of entropy is standard for generating a 24-word mnemonic phrase
     let mut entropy = [0u8; 32];
