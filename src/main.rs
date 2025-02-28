@@ -8,8 +8,8 @@ mod options {
 fn main() {
     println!("What do you want to do?");
     println!("1 - generate random 24 words");
-    println!("2 - generate zpub from 24 words");
-    println!("3 - generate bech32 addresses from zpub");
+    println!("2 - generate xpub & zpub from 24 words");
+    println!("3 - generate bech32 addresses from xpub or zpub");
 
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Error...");

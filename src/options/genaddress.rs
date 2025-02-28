@@ -18,7 +18,7 @@ fn get_slip132_prefixes() -> HashMap<&'static str, [u8; 4]> {
     prefixes
 }
 
-// zpub to xpub
+// convert zpub to xpub
 fn convert_zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>> {
     let prefixes = get_slip132_prefixes();
 
@@ -46,7 +46,7 @@ fn convert_zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>
     new_data[..4].copy_from_slice(prefix_xpub);
 
     // Calc SHA-256 hash and add new checksum
-    let checksum = Sha256::digest(&Sha256::digest(&new_data[..78])); // SHA-256 for first 78 byte
+    let checksum = Sha256::digest(&Sha256::digest(&new_data[..78])); // SHA-256 for first 78 bytes
     let checksum = &checksum[..4]; // Checksum of first 4 bytes
 
     // Add new checksum
@@ -59,19 +59,37 @@ fn convert_zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>
 }
 
 fn generate_addresses(
-    zpub: &str,
+    extended_key: &str,
     num_addresses: u32,
 ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let secp = Secp256k1::new();
+    let prefixes = get_slip132_prefixes();
 
-    // Convert zpub to xpub
-    let xpub_str = convert_zpub_to_xpub(zpub)?;
+    // Decode the provided extended key (xpub or zpub) to determine its type
+    let decoded = bs58::decode(extended_key).into_vec()?;
+    if decoded.len() != 82 {
+        return Err("Invalid extended key length. Expected 82 bytes when decoded.".into());
+    }
+    let current_prefix = &decoded[..4];
+
+    // Convert input to xpub if necessary
+    let xpub_str = if current_prefix == prefixes.get("zpub").unwrap() {
+        // Input is zpub, convert it to xpub
+        convert_zpub_to_xpub(extended_key)?
+    } else if current_prefix == prefixes.get("xpub").unwrap() {
+        // Input is already an xpub, use it directly
+        extended_key.to_string()
+    } else {
+        return Err("Input is not a valid xpub or zpub.".into());
+    };
+
+    // Convert the xpub string into an Xpub object
     let xpub = Xpub::from_str(&xpub_str)?;
 
     let mut addresses = Vec::new();
 
     for i in 0..num_addresses {
-        // Use 0 for external chain, use 1 for index
+        // Use 0 for external chain, use i for index
         let path = vec![
             ChildNumber::Normal { index: 0 },
             ChildNumber::Normal { index: i },
@@ -93,14 +111,14 @@ fn generate_addresses(
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    print!("Enter your zpub key: ");
+    print!("Enter your xpub or zpub key: ");
     io::stdout().flush()?;
 
-    let mut zpub = String::new();
-    io::stdin().read_line(&mut zpub)?;
-    let zpub = zpub.trim();
+    let mut pubkey = String::new();
+    io::stdin().read_line(&mut pubkey)?;
+    let pubkey = pubkey.trim();
 
-    let addresses = generate_addresses(zpub, 5)?;
+    let addresses = generate_addresses(pubkey, 5)?;
 
     println!("\nGenerated Bitcoin Bech32 Addresses:");
     for address in addresses {
