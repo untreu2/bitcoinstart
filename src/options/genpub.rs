@@ -7,8 +7,8 @@ use std::io::{self, Write};
 use std::str::FromStr;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Prompt the user to enter a 24-word mnemonic phrase
-    print!("Please enter your 24-word mnemonic: ");
+    // Prompt the user to enter a mnemonic phrase
+    print!("Please enter your mnemonic phrase: ");
     // Flush stdout to ensure the prompt is displayed immediately
     io::stdout().flush()?;
 
