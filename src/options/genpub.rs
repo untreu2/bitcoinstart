@@ -38,6 +38,9 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Convert the derived private key into its corresponding extended public key
     let account_xpub = Xpub::from_priv(&secp, &account_xprv);
 
+    // Print the xpub to the console
+    println!("\nxpub: {}", base58::encode_check(&account_xpub.encode()));
+
     // Serialize the account extended public key (xpub) into bytes
     let mut serialized = account_xpub.encode();
 
