@@ -118,7 +118,13 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     io::stdin().read_line(&mut pubkey)?;
     let pubkey = pubkey.trim();
 
-    let addresses = generate_addresses(pubkey, 5)?;
+    print!("Enter number of addresses to generate: ");
+    io::stdout().flush()?;
+    let mut times_input = String::new();
+    io::stdin().read_line(&mut times_input)?;
+    let times: u32 = times_input.trim().parse().expect("Invalid number");
+
+    let addresses = generate_addresses(pubkey, times)?;
 
     println!("\nGenerated Bitcoin Bech32 Addresses:");
     for address in addresses {
