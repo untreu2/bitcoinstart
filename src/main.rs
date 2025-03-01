@@ -8,7 +8,7 @@ mod options {
 fn main() {
     println!("What do you want to do?");
     println!("1 - generate mnemonic phrase");
-    println!("2 - generate xpub & zpub from menemonic phrase");
+    println!("2 - generate xpub & zpub from mnemonic phrase");
     println!("3 - generate bech32 addresses from xpub or zpub");
 
     let mut input = String::new();
